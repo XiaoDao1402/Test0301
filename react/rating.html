@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div>
+   
+
+    <script src="babel/browser.js"></script>
+    <script src="react/react.js"></script>
+    <script src="react/react-dom.js"></script>
+    <script src="js/jquery.js"></script>
+    <script type="text/babel">
+        var Rating = React.createClass({
+    
+        
+            add:function(){
+                var newbook = {
+                    title:this.props.title,
+                    number:this.props.number+1
+                }
+                this.props.onItemChange(newbook);
+             
+            },
+            noadd:function(){
+                var newbook = {
+                    title:this.props.title,
+                    number:this.props.number-1
+                }
+                this.props.onItemChange(newbook);
+               
+               if (this.props.number<=0) {
+                   alert("不能在减了");
+                
+               }
+            },
+           
+            render:function () {
+                return (
+                    <div>
+                        <h3>图书:《{this.props.title}》的评分是 {this.state.number} </h3>
+                        <button onClick={this.add}>+</button> <button onClick={this.noadd}>-</button>
+                    </div>
+                );
+            }
+           
+        });
+
+        var data = [
+            {title:"es6入门",number:8},
+            {title:"js入门",number:3},
+            {title:"react入门",number:6}
+        ];
+        var RatingList = React.createClass({
+       
+
+            itemChange:function(newbook){
+                var arr = this.props.books;
+                var item = arr.find(function(item){return item.title===newbook.title});
+                item.number = newbook.number;
+                arr.sort(function(a,b){return b.number-a.number});
+                this.setState({
+                    books:arr
+                })
+            },
+            getInitialState:function(){
+                return{ 
+                    
+                      books:this.props.books.sort(function(a,b){return b.number-a.number})
+                }
+            },
+
+            render:function(){
+                var cpm=this;
+                return (
+
+                    <div>
+                       {this.state.books.map(function(item,index){
+                            return(
+                                <Rating onItemChange={cpm.itemChange} key={index} title={item.title} number={item.number}>
+                                    </Rating>
+                            );
+
+                       })}
+                    </div>
+
+                );
+            }
+
+        });
+    
+        ReactDOM.render(<RatingList books={data}></RatingList>,document.getElementById("app"));
+        
+    </script>
+</body>
+</html>
