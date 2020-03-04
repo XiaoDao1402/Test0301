@@ -19,7 +19,7 @@
             getDefaultProps:function(){
                 return{
                     user:"aaaa",
-                  
+
                 }
             
             }
@@ -37,3 +37,20 @@
     </script>
 </body>
 </html>
+
+
+submitHandler: function (form) { //通过之后回调
+    //进行ajax传值
+    $.ajax({
+        url: "www.baidu.com",
+        type: "post",
+        dataType: "json",
+        data: {
+            user: $("#user").val(),
+            password: $("#password").val()
+        },
+        success: function (msg) {
+            console.info(msg)
+        }
+    });
+}
