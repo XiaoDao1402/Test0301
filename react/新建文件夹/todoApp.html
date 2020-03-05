@@ -24,13 +24,11 @@
 	<script src="react/react-dom.js"></script>
 	<script src="babel/browser.js"></script>
 	<script type="text/babel">
-	
 	var data = [
 		{title:"学习ES6新语法", finished:false},
 		{title:"学习Spring Boot", finished:false},
 		{title:"背诵单词", finished:true}
 	];
-
 	var TodoHeader = React.createClass({
 		addNewTodo:function(){
 			if(!this.refs.newTitle.value)
@@ -51,7 +49,6 @@
 			);
 		}
 	});
-	
 	var TodoList = React.createClass({
 		todoRemove:function(item){
 			this.props.onTodoRemove(item);
@@ -80,7 +77,6 @@
 			);
 		}
 	});
-
 	var App = React.createClass({
 		addTodo:function(newItem){
 			var arr = this.state.todos.slice();
@@ -126,12 +122,10 @@
 			);
 		}
 	});
-
 	ReactDOM.render(
 		<App></App>,
 		document.getElementById("app")
 	);
-
 	</script>
 </body>
 </html>

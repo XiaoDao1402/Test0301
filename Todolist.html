@@ -4,17 +4,18 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Page Title</title>
+    <title>首页</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
- 
+
     <script src="js/jquery-1.11.3.js"></script>
+
 </head>
 
 <body>
 
     <h1>Todolist</h1>
 
-    <input type="text" value="" id="todotext"/> <button id="add">添加</button>
+    <input type="text" value="" id="todotext" /> <button id="add">添加</button>
 
     <table border="1">
         <thead>
@@ -26,54 +27,48 @@
         </tbody>
     </table>
 
-    <script  type="text/javascript">
+    <script type="text/javascript">
+        var data = [
+            { title: "唱", finished: false },
+            { title: "跳", finished: false },
+            { title: "rap", finished: true }
+        ];
+
         $(function () {
-            var data = [
-                {title:"唱",finished:false},
-                {title:"跳",finished:false},
-                {title:"rap",finished:true}
-            ];
 
             init(data);
 
-           $("#add").click(function(){
-                if($("#todotext").val().trim()==""){
+            $("#add").on("click", function () {
+                if ($("#todotext").val().trim() == "") {
                     alert("请添加事项");
-                }else{
-                    data.push({title:$("#todotext").val(),finished:false});
+                } else {
+                    data.push({ title: $("#todotext").val(), finished: false });
                     $("#todotext").val("");
                     init(data);
                 }
-           });
-
-           $(".del").click(function(){
-                data.splice($(this).attr("key"),1);
-                init(data);
-           });
-
-           
+            });
         })
 
-       
-         
-        function init(data){
-         
+        function delete_id(id) {
+            data.splice(id, 1);
+            init(data);
+        }
+
+        function init(data) {
             var html = "";
             //+"<td><input type='checkbox' "+data.finished?'checked':''+"></td>"
 
-            $.each(data,function(index,data){
-                html += "<tr >"
-                        +"<td><input type='checkbox'></td>"
-                        + "<td>"+data.title+"</td>"
-                        +"<td><button class='del' key="+index+">"+"删除</button></td>"
-                    +"</tr>";
-           })
-           $("tbody").empty().append(html);
+            $.each(data, function (index, data) {
+                html += "<tr>"
+                    + "<td><input type='checkbox'></td>"
+                    + "<td>" + data.title + "</td>"
+                    + "<td><button class='del' onclick='delete_id(" + index + ")' key=" + index + ">" + "删除</button></td>"
+                    + "</tr>";
+            })
+            $("tbody").empty().append(html);
         }
-
 
     </script>
 
 </body>
-
 </html>
