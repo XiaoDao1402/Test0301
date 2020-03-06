@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
@@ -82,6 +82,7 @@
 	});
 
 	var App = React.createClass({
+
 		addTodo:function(newItem){
 			var arr = this.state.todos.slice();
 			arr.push(newItem);
@@ -99,6 +100,7 @@
 				todos:arr
 			});
 		},
+
 		changeTodoStatus:function(updateItem){
 			var arr = this.state.todos.slice();
 			var item = arr.find(function(value,index,arr){
@@ -109,6 +111,7 @@
 				todos:arr
 			});
 		},
+
 		getInitialState:function(){
 			return {
 				todos:data
