@@ -26,9 +26,10 @@
 	<script type="text/babel">
 	
 	var data = [
-		{title:"学习ES6新语法", finished:false},
-		{title:"学习Spring Boot", finished:false},
-		{title:"背诵单词", finished:true}
+		{title:"唱", finished:false},
+		{title:"跳", finished:false},
+		{title:"rap", finished:false},
+		{title:"篮球", finished:false},
 	];
 
 	var TodoHeader = React.createClass({
@@ -90,6 +91,7 @@
 				todos:arr
 			});
 		},
+		
 		removeTodo:function(item){
 			var arr = this.state.todos.slice();
 			var index = arr.findIndex(function(value,index,arr){
@@ -106,6 +108,7 @@
 			var item = arr.find(function(value,index,arr){
 				return updateItem.title === value.title;
 			});
+			
 			item.finished = updateItem.finished;
 			this.setState({
 				todos:arr
