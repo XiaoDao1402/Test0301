@@ -1,100 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 </head>
+
 <body>
-    <div id="app"></div>
-   
+    <div id="root"></div>
+
 
     <script src="babel/browser.js"></script>
     <script src="react/react.js"></script>
     <script src="react/react-dom.js"></script>
     <script src="js/jquery.js"></script>
     <script type="text/babel">
-        var Rating = React.createClass({
-    
-        
-            add:function(){
-                var newbook = {
-                    title:this.props.title,
-                    number:this.props.number+1
-                }
-                this.props.onItemChange(newbook);
-             
-            },
-            noadd:function(){
-                var newbook = {
-                    title:this.props.title,
-                    number:this.props.number-1
-                }
-                this.props.onItemChange(newbook);
-               
-               if (this.props.number<=0) {
-                   alert("不能在减了");
-                
-               }
-            },
-           
-            render:function () {
-                return (
-                    <div>
-                        <h3>图书:《{this.props.title}》的评分是 {this.props.number} </h3>
-                        <button onClick={this.add}>+</button> <button onClick={this.noadd}>-</button>
-                    </div>
-                );
+        // var Rating = React.createClass({
+
+
+        //     add:function(){
+        //         var newbook = {
+        //             title:this.props.title,
+        //             number:this.props.number+1
+        //         }
+        //         this.props.onItemChange(newbook);
+
+        //     },
+        //     noadd:function(){
+        //         var newbook = {
+        //             title:this.props.title,
+        //             number:this.props.number-1
+        //         }
+        //         this.props.onItemChange(newbook);
+
+        //        if (this.props.number<=0) {
+        //            alert("不能在减了");
+
+        //        }
+        //     },
+
+        //     render:function () {
+        //         return (
+        //             <div>
+        //                 <h3>图书:《{this.props.title}》的评分是 {this.props.number} </h3>
+        //                 <button onClick={this.add}>+</button> <button onClick={this.noadd}>-</button>
+        //             </div>
+        //         );
+        //     }
+
+        // });
+
+        // var data = [
+        //     {title:"es6入门",number:8},
+        //     {title:"js入门",number:3},
+        //     {title:"react入门",number:6}
+        // ];
+        // var RatingList = React.createClass({
+
+
+        //     itemChange:function(newbook){
+        //         var arr = this.props.books;
+        //         var item = arr.find(function(item){return item.title===newbook.title});
+        //         item.number = newbook.number;
+        //         arr.sort(function(a,b){return b.number-a.number});
+        //         this.setState({
+        //             books:arr
+        //         })
+        //     },
+        //     getInitialState:function(){
+        //         return{ 
+
+        //               books:this.props.books.sort(function(a,b){return b.number-a.number})
+        //         }
+        //     },
+
+        //     render:function(){
+        //         var cpm=this;
+        //         return (
+
+        //             <div>
+        //                {this.state.books.map(function(item,index){
+        //                     return(
+        //                         <Rating onItemChange={cpm.itemChange} key={index} title={item.title} number={item.number}>
+        //                             </Rating>
+        //                     );
+
+        //                })}
+        //             </div>
+
+        //         );
+        //     }
+
+        // });
+
+        // ReactDOM.render(<RatingList books={data}></RatingList>,document.getElementById("app"));
+
+        function Square(props) {
+            return (
+                <button className="square" onClick={props.onClick}>
+                    {props.value}
+                </button>
+            );
+        }
+
+        class Board extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    squares: Array(9).fill(null),
+                    xIsNext: true,
+                };
             }
-           
-        });
 
-        var data = [
-            {title:"es6入门",number:8},
-            {title:"js入门",number:3},
-            {title:"react入门",number:6}
-        ];
-        var RatingList = React.createClass({
-       
-
-            itemChange:function(newbook){
-                var arr = this.props.books;
-                var item = arr.find(function(item){return item.title===newbook.title});
-                item.number = newbook.number;
-                arr.sort(function(a,b){return b.number-a.number});
+            handleClick(i) {
+                const squares = this.state.squares.slice();
+                if (calculateWinner(squares) || squares[i]) {
+                    return;
+                }
+                squares[i] = this.state.xIsNext ? 'X' : 'O';
                 this.setState({
-                    books:arr
-                })
-            },
-            getInitialState:function(){
-                return{ 
-                    
-                      books:this.props.books.sort(function(a,b){return b.number-a.number})
-                }
-            },
+                    squares: squares,
+                    xIsNext: !this.state.xIsNext,
+                });
+            }
 
-            render:function(){
-                var cpm=this;
+            renderSquare(i) {
                 return (
-
-                    <div>
-                       {this.state.books.map(function(item,index){
-                            return(
-                                <Rating onItemChange={cpm.itemChange} key={index} title={item.title} number={item.number}>
-                                    </Rating>
-                            );
-
-                       })}
-                    </div>
-
+                    <Square
+                        value={this.state.squares[i]}
+                        onClick={() => this.handleClick(i)}
+                    />
                 );
             }
 
-        });
-    
-        ReactDOM.render(<RatingList books={data}></RatingList>,document.getElementById("app"));
-        
+            render() {
+                const winner = calculateWinner(this.state.squares);
+                let status;
+                if (winner) {
+                    status = 'Winner: ' + winner;
+                } else {
+                    status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+                }
+
+                return (
+                    <div>
+                        <div className="status">{status}</div>
+                        <div className="board-row">
+                            {this.renderSquare(0)}
+                            {this.renderSquare(1)}
+                            {this.renderSquare(2)}
+                        </div>
+                        <div className="board-row">
+                            {this.renderSquare(3)}
+                            {this.renderSquare(4)}
+                            {this.renderSquare(5)}
+                        </div>
+                        <div className="board-row">
+                            {this.renderSquare(6)}
+                            {this.renderSquare(7)}
+                            {this.renderSquare(8)}
+                        </div>
+                    </div>
+                );
+            }
+        }
+
+        class Game extends React.Component {
+            render() {
+                return (
+                    <div className="game">
+                        <div className="game-board">
+                            <Board />
+                        </div>
+                        <div className="game-info">
+                            <div>{/* status */}</div>
+                            <ol>{/* TODO */}</ol>
+                        </div>
+                    </div>
+                );
+            }
+        }
+
+        // ========================================
+
+        ReactDOM.render(
+            <Game />,
+            document.getElementById('root')
+        );
+
+        function calculateWinner(squares) {
+            const lines = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6],
+            ];
+
+         
+
+            for (let i = 0; i < lines.length; i++) {
+                const [a, b, c] = lines[i];
+                console.info("a",a);
+                console.info("b",b);
+                console.info("c",c);
+                console.info("——————————————————");
+            console.info("squares[a]",squares[a]);
+            console.info("squares[b]",squares[b]);
+            console.info(" squares[c]", squares[c]);
+
+                if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+                    return squares[a];
+                }
+            }
+            return null;
+        }
+
+
     </script>
 </body>
+
 </html>

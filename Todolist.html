@@ -91,13 +91,15 @@
                 if ($("#todotext").val().trim() == "") {
                     alert("请添加事项");
                 } else {
-                    data.push({title:$("#todotext").val(),finished:false});        
+                    data.push({ title: $("#todotext").val(), finished: false });
                     $("#todotext").val("");
+                    data.sort((a, b)=> a.title.localeCompare(b.title, 'zh'));
                     init(data);
                     initUnfinish(data);
                 }
             });
         })
+
 
         //删除
         function del_id(id) {
@@ -108,12 +110,13 @@
         }
 
         //更改状态
-        function changestatus(id){
+        function changestatus(id) {
             data[id].finished = !data[id].finished; //取反
             init(data);
             initFinished(data);
             initUnfinish(data);
         }
+
 
         //加载全部事项
         function init(data) {
@@ -121,8 +124,8 @@
             var checked = "checked";
             $.each(data, function (index, data) {
                 html += "<tr>"
-                    + "<td><input type='checkbox' "+(data.finished?'checked':'')+" name='all' onchange='changestatus("+index+")'></td>"
-                    + "<td class="+(data.finished?'line':'')+">" + data.title + "</td>"
+                    + "<td><input type='checkbox' " + (data.finished ? 'checked' : '') + " name='all' onchange='changestatus(" + index + ")'></td>"
+                    + "<td class=" + (data.finished ? 'line' : '') + "><input class='input'  name='allthings' key=" + index + "  readonly='readonly'  onchange='changetext()' style='width:50px;' name='allthings' value=" + data.title + "></td>"
                     + "<td><button class='del' onclick='del_id(" + index + ")' key=" + index + ">" + "删除</button></td>"
                     + "</tr>";
             });
@@ -134,14 +137,14 @@
             var html = "";
 
             $.each(unFinishData, function (index, data) {
-                if(!data.finished){
+                if (!data.finished) {
                     html += "<tr>"
-                    + "<td><input type='checkbox' onchange='changestatus(" + index + ")'></td>"
-                    + "<td>" + data.title + "</td>"
-                    + "<td><button class='del' onclick='del_id(" + index + ")' key=" + index + ">" + "删除</button></td>"
-                    + "</tr>";
+                        + "<td><input type='checkbox' onchange='changestatus(" + index + ")'></td>"
+                        + "<td><input class=''  readonly='readonly'  style='width:50px;' value=" + data.title + "></td>"
+                        + "<td><button class='del' onclick='del_id(" + index + ")' key=" + index + ">" + "删除</button></td>"
+                        + "</tr>";
                 }
-               
+
             })
             $("tbody").eq(1).empty().append(html);
         }
@@ -150,19 +153,20 @@
         //加载完成事项
         function initFinished(data) {
             var html = "";
-            
+
             $.each(data, function (index, data) {
-                if(data.finished){
+                if (data.finished) {
                     html += "<tr>"
-                    + "<td><input type='checkbox' "+(data.finished?'checked':'')+" onchange='changestatus(" + index + ")'></td>"
-                    + "<td class="+(data.finished?'line':'')+">" + data.title + "</td>"
-                    + "<td><button class='del' onclick='del_id(" + index + ")' key=" + index + ">" + "删除</button></td>"
-                    + "</tr>";
+                        + "<td><input type='checkbox' " + (data.finished ? 'checked' : '') + " onchange='changestatus(" + index + ")'></td>"
+                        + "<td class=" + (data.finished ? 'line' : '') + "><input class=''  readonly='readonly' style='width:50px;' name='allthings' value=" + data.title + "></td>"
+                        + "<td><button class='del'  onclick='del_id(" + index + ")' key=" + index + ">" + "删除</button></td>"
+                        + "</tr>";
                 }
-               
+
             })
             $("tbody").eq(2).empty().append(html);
         }
+
 
 
 

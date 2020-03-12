@@ -75,6 +75,11 @@
             init(data);
         }
 
+        function del_finished(id) {
+            data.splice(id, 1);
+            initFinish(data);
+        }
+
         $(function () {
             init(data);
 
@@ -120,7 +125,7 @@
                     html += "<tr>"
                     + "<td><input type='checkbox' " + (data.finished ? 'checked' : '') + " name='all' onchange='changestatus(" + index + ")'></td>"
                     + "<td class=" + (data.finished ? 'line' : '') + ">" + data.title + "</td>"
-                    + "<td><button class='del' onclick='del_all(" + index + ")' key=" + index + ">" + "删除</button></td>"
+                    + "<td><button class='del' onclick='del_finished(" + index + ")' key=" + index + ">" + "删除</button></td>"
                     + "</tr>";
                 }    
             });
