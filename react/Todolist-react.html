@@ -16,8 +16,8 @@
             text-align: center;
         }
 
-         .finished {
-           
+        .finished {
+
             color: red;
         }
 
@@ -40,10 +40,10 @@
     <script type="text/babel">
 
         var data = [
-            { title: "唱", finished: false },
-            { title: "跳", finished: false },
-            { title: "rap", finished: false },
-            { title: "篮球", finished: false },
+            { id:0,title: "唱", finished: false },
+            { id:1,title: "跳", finished: false },
+            { id:2,title: "rap", finished: false },
+            { id:3,title: "篮球", finished: false },
         ];
 
 
@@ -76,7 +76,7 @@
                 this.setState({
                     todos: arr
                 });
-            },
+            },   
 
             //更改完成状态
             changeTodoStatus: function (updateItem) {
@@ -98,22 +98,82 @@
                 })
             },
 
-            changedata:function(data){
-                console.info(data);
+            changeData:function(data){
+                var arr = this.state.todos.slice();
+                var item = arr.find(function(value,index,arr){
+                    return parseInt(data.id) == value.id;
+                });
+                 item.title = data.title;
+                 this.setState({
+                     todos:arr
+                 });
             },
+
+            //上移
+           up:function(updateitem){
+            var arr = this.state.todos.slice();
+
+            var index = arr.findIndex(function(value){
+                return value.id===updateitem.id;
+            });
+
+            if(index!=0){
+                var title ="";
+                var fin=false;
+                title=arr[index-1].title;
+                fin=arr[index-1].finished;
+
+                arr[index-1].title=updateitem.title;
+                arr[index-1].finished=updateitem.finished;
+                updateitem.title=title;
+                updateitem.finished=fin;
+
+                this.setState({
+                    todos:arr,
+                });
+
+            }
+        },
+        //上移
+        below:function(updateitem){
+            var arr = this.state.todos.slice();
+            var index = arr.findIndex(function(value){
+                return value.id===updateitem.id;
+            });
+            if(index<this.state.todos.length-1){
+                
+                var title ="";
+                var fin=false;
+                title=arr[index+1].title;
+                fin=arr[index+1].finished;
+
+                arr[index+1].title=updateitem.title;
+                arr[index+1].finished=updateitem.finished;
+                updateitem.title=title;
+                updateitem.finished=fin;
+
+                this.setState({
+                    todos:arr
+                });
+
+            }
+        },
 
 
             render: function () {
                 return (
                     <div>
                         <h3>Todo App</h3>
-                        <TodoHeader onNewTodoAdd={this.addTodo}></TodoHeader>
+                        <TodoHeader onNewTodoAdd={this.addTodo} todos={this.state.todos}></TodoHeader>
                         <hr />
                         <TodoList
                             onTodoStatusChange={this.changeTodoStatus}
                             onTodoRemove={this.removeTodo}
+                            onChangeTitle={this.changeData}
                             todos={this.state.todos}
-                            ThingsValue={this.state.ThingsValue}></TodoList>
+                            ThingsValue={this.state.ThingsValue}
+                            Onup={this.up}
+                            OnBelow={this.below}></TodoList>
                         <TodoFooter changeThings={this.changeThings}></TodoFooter>
                     </div>
                 );
@@ -123,10 +183,15 @@
 
         var TodoHeader = React.createClass({
 
+           
             addNewTodo: function () {
+                
                 if (!this.refs.newTitle.value)
                     return;
+               
+
                 this.props.onNewTodoAdd({
+                    id:this.props.todos.length+1,
                     title: this.refs.newTitle.value,
                     finished: false
                 });
@@ -147,6 +212,7 @@
 
         var TodoList = React.createClass({
 
+            
             todoRemove: function (item) {
                 this.props.onTodoRemove(item);
             },
@@ -157,11 +223,19 @@
             },
 
             changeText:function(e){
-                console.info("aaa");
-                console.log(e.target.value);    //获取修改后的值
-                this.setState({
-                    value:e.target.value
-                })
+                 this.props.onChangeTitle({
+                    id:e.target.id,
+                    title:e.target.value,
+               
+                });
+            },
+
+            onup:function(item){
+                this.props.Onup(item);
+            },
+
+            onbelow:function(item){
+                this.props.OnBelow(item);
             },
 
             render: function () {
@@ -171,49 +245,68 @@
                 var html = this.props.todos.map((item, index) => {
                     if (status == 1) {
                         return (
-                            <tr key={index}>
+                            <tr key={item.id}>
                                 <td>
-                                    <input type="checkbox" checked={item.finished} onChange={() => compo.todoStatusChange(item)} />
+                                    <input type="checkbox" checked={item.finished} 
+                                    onChange={() => compo.todoStatusChange(item)} />
                                 </td>
-                                <td >
-                                    <input type="text" className={item.finished ? 'finished' : ''}  onChange={() => compo.changeText.bind(null,this)} value={item.title}/>
+                                <td>
+                                    <input type="text" className={item.finished ? 'finished' : ''} 
+                                     onChange={this.changeText} id={item.id} finished={item.finished} value={item.title} />
                                 </td>
-                                <td><button onClick={() => compo.todoRemove(item)}>删除</button></td>
+                                <td>
+                                    <button onClick={() => compo.todoRemove(item)}>删除</button>
+                                    <button onClick={() => compo.onup(item)}>上</button>
+                                    <button onClick={() => compo.onbelow(item)}>下</button>
+                                </td>
+                             
                             </tr>
                         );
                     }
 
-                    if (status == 2 && item.finished == false) {
+                    if (status == 2 && item.finished === false) {
                         return (
-                            <tr key={index}>
+                            <tr key={item.id}>
                                 <td>
-                                    <input type="checkbox" checked={item.finished} onChange={() => compo.todoStatusChange(item)} />
+                                    <input type="checkbox" checked={item.finished} 
+                                    onChange={() => compo.todoStatusChange(item)} />
                                 </td>
-                                <td >
-                                    <input  type="text" className={item.finished ? 'finished' : ''}  onChange={() => compo.changeText.bind(null,this)} value={item.title}/>
+                                <td>
+                                    <input  type="text" className={item.finished ? 'finished' : ''}  
+                                    onChange={this.changeText}  id={item.id} finished={item.finished} value={item.title}/>
                                 </td>
-                                <td><button onClick={() => compo.todoRemove(item)}>删除</button></td>
+                                <td>
+                                    <button onClick={() => compo.todoRemove(item)}>删除</button>
+                                    <button onClick={() => compo.onup(item)}>上</button>
+                                    <button onClick={() => compo.onbelow(item)}>下</button>
+                                    </td>
+                              
                             </tr>
                         );
                     }
 
                     if (status == 3 && item.finished === true) {
                         return (
-                            <tr key={index}>
+                            <tr key={item.id}>
                                 <td>
-                                    <input type="checkbox" checked={item.finished} onChange={() => compo.todoStatusChange(item)} />
+                                    <input type="checkbox" checked={item.finished}
+                                     onChange={() => compo.todoStatusChange(item)} />
                                 </td>
                                 <td>
-                                    <input  type="text" className={item.finished ? 'finished' : ''}  onChange={() => compo.changeText.bind(null,this)} value={item.title}/>
+                                    <input  type="text" className={item.finished ? 'finished' : ''}  
+                                    onChange={this.changeText} id={item.id} finished={item.finished} value={item.title}/>
                                 </td>
-                                <td><button onClick={() => compo.todoRemove(item)}>删除</button></td>
+                                <td><button onClick={() => compo.todoRemove(item)}>删除</button>
+                                    <button onClick={() => compo.onup(item)}>上</button>
+                               <button onClick={() => compo.onbelow(item)}>下</button>
+                                    </td>
+                            
                             </tr>
                         );
                     }
                 });
 
                 return (
-
                     <table className="todo-list">
                         <thead><tr><th>完成</th><th>待办事项</th><th>删除</th></tr></thead>
                         <tbody>
@@ -247,10 +340,10 @@
 
             render: function () {
                 return (
-                    <div>
-                        <button type="button" value="1" ref="all" onClick={this.ShowAll.bind(null,this)}>全部事项</button>
-                        <button type="button" value="2" ref="finish" onClick={this.ShowFinish.bind(null,this)}>未完成事项</button>
-                        <button type="button" value="3" ref="finished" onClick={this.ShowFinished.bind(null,this)}>已完成事项</button>
+                    <div>   
+                        <button type="button" value="1" ref="all" onClick={this.ShowAll}>全部事项</button>
+                        <button type="button" value="2" ref="finish" onClick={this.ShowFinish}>未完成事项</button>
+                        <button type="button" value="3" ref="finished" onClick={this.ShowFinished}>已完成事项</button>
                     </div>
                 );
 
@@ -262,9 +355,7 @@
             <App></App>,
             document.getElementById("app")
         );
-
-
-
+        
     </script>
 </body>
 

@@ -9,7 +9,7 @@ function App() {
         { title: "rap", finished: true }
       ];  
 
-    comp
+    
     
   return (
     <div>
