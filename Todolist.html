@@ -1,196 +1,210 @@
 ﻿<!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>首页</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <h1>Todolist</h1>
     sadas
     <input type="text" value="" id="todotext" /> <button id="add">添加</button>
 
-
-
     <div>
-        <div style="display: inline-table;">
-            <h2>全部事项</h2>
-            <table border="1">
-                <thead>
-                    <th>完成</th>
-                    <th>代办事情</th>
-                    <th>操作</th>
-                </thead>
-                <tbody class=".allthings">
-                </tbody>
-            </table>
-        </div>
+      <div style="display: inline-table;">
+        <h2>全部事项</h2>
+        <table border="1">
+          <thead>
+            <th>完成</th>
+            <th>代办事情</th>
+            <th>操作</th>
+          </thead>
+          <tbody class=".allthings"></tbody>
+        </table>
+      </div>
 
+      <div style="display: inline-table; margin-left: 50px;">
+        <h2>未完成事项</h2>
+        <table border="1">
+          <thead>
+            <th>完成</th>
+            <th>代办事情</th>
+            <th>操作</th>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
-
-        <div style="display: inline-table;margin-left: 50px;">
-            <h2>未完成事项</h2>
-            <table border="1">
-                <thead>
-                    <th>完成</th>
-                    <th>代办事情</th>
-                    <th>操作</th>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-
-        </div>
-
-        <div style="display: inline-table;margin-left: 50px;">
-            <h2>已完成事项</h2>
-            <table border="1">
-                <thead>
-                    <th>完成</th>
-                    <th>代办事情</th>
-                    <th>操作</th>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-
-        </div>
-
-
-
+      <div style="display: inline-table; margin-left: 50px;">
+        <h2>已完成事项</h2>
+        <table border="1">
+          <thead>
+            <th>完成</th>
+            <th>代办事情</th>
+            <th>操作</th>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
 
-
-
     <style>
-        .line {
-            text-decoration: line-through;
-        }
+      .line {
+        text-decoration: line-through;
+      }
     </style>
 
     <script type="text/javascript">
-        //全部事项
-        var data = [
-            { title: "唱", finished: false },
-            { title: "跳", finished: false },
-            { title: "rap", finished: false }
-        ];
-        $(function () {
+      //全部事项
+      var data = [
+        { title: '唱', finished: false },
+        { title: '跳', finished: false },
+        { title: 'rap', finished: false },
+      ];
+      $(function () {
+        init(data);
 
+        initUnfinish(data);
 
-          
-
-            init(data);
-
-            initUnfinish(data);
-
-            $("#add").on("click", function () {
-                if ($("#todotext").val().trim() == "") {
-                    alert("请添加事项");
-                } else {
-                    data.push({ title: $("#todotext").val(), finished: false });
-                    $("#todotext").val("");
-                    data.sort((a, b)=> a.title.localeCompare(b.title, 'zh'));
-                    init(data);
-                    initUnfinish(data);
-                }
-            });
-        })
-
-
-        //删除
-        function del_id(id) {
-            data.splice(id, 1); //删除数组中的元素
-            init(data);
-            initFinished(data);
-            initUnfinish(data);
-        }
-
-        //更改状态
-        function changestatus(id) {
-            data[id].finished = !data[id].finished; //取反
-            init(data);
-            initFinished(data);
-            initUnfinish(data);
-        }
-        
-        //移除标签的只读属性，让其能够被修改
-        function changetext(input){
-            input.removeAttribute("readonly");     
-        }
-
-        //保存修改并排序
-        function savechange(input){
-            input.setAttribute("readonly","readonly"); 
-            var index = input.getAttribute("key");
-            console.info(index);
-            data[index].title = input.value;
-            data.sort((a, b)=> a.title.localeCompare(b.title, 'zh'));
+        $('#add').on('click', function () {
+          if ($('#todotext').val().trim() == '') {
+            alert('请添加事项');
+          } else {
+            data.push({ title: $('#todotext').val(), finished: false });
+            $('#todotext').val('');
+            data.sort((a, b) => a.title.localeCompare(b.title, 'zh'));
             init(data);
             initUnfinish(data);
-            initFinished(data);
-        }
+          }
+        });
+      });
 
-        //加载全部事项
-        function init(data) {
-            var html = "";
-            var checked = "checked";
-            $.each(data, function (index, data) {
-                html += "<tr>"
-                    + "<td><input type='checkbox' " + (data.finished ? 'checked' : '') + " name='all' onchange='changestatus(" + index + ")'></td>"
-                    + "<td class=" + (data.finished ? 'line' : '') + "><input class='input'   ondblclick='changetext(this)'  onblur='savechange(this)' name='allthings' key=" + index + "  readonly='readonly'  onchange='changetext()' style='width:50px;' name='allthings' value=" + data.title + "></td>"
-                    + "<td><button class='del' onclick='del_id(" + index + ")' key=" + index + ">" + "删除</button></td>"
-                    + "</tr>";
-            });
-            $("tbody").eq(0).empty().append(html);
-        }
+      //删除
+      function del_id(id) {
+        data.splice(id, 1); //删除数组中的元素
+        init(data);
+        initFinished(data);
+        initUnfinish(data);
+      }
 
-        //加载代办事项
-        function initUnfinish(unFinishData) {
-            var html = "";
+      //更改状态
+      function changestatus(id) {
+        data[id].finished = !data[id].finished; //取反
+        init(data);
+        initFinished(data);
+        initUnfinish(data);
+      }
 
-            $.each(unFinishData, function (index, data) {
-                if (!data.finished) {
-                    html += "<tr>"
-                        + "<td><input type='checkbox' onchange='changestatus(" + index + ")'></td>"
-                        + "<td><input class=''  readonly='readonly'  ondblclick='changetext(this)'  onblur='savechange(this)' key=" + index + " style='width:50px;' value=" + data.title + "></td>"
-                        + "<td><button class='del' onclick='del_id(" + index + ")' key=" + index + ">" + "删除</button></td>"
-                        + "</tr>";
-                }
+      //移除标签的只读属性，让其能够被修改
+      function changetext(input) {
+        input.removeAttribute('readonly');
+      }
 
-            })
-            $("tbody").eq(1).empty().append(html);
-        }
+      //保存修改并排序
+      function savechange(input) {
+        input.setAttribute('readonly', 'readonly');
+        var index = input.getAttribute('key');
+        console.info(index);
+        data[index].title = input.value;
+        data.sort((a, b) => a.title.localeCompare(b.title, 'zh'));
+        init(data);
+        initUnfinish(data);
+        initFinished(data);
+      }
 
+      //加载全部事项
+      function init(data) {
+        var html = '';
+        var checked = 'checked';
+        $.each(data, function (index, data) {
+          html +=
+            '<tr>' +
+            "<td><input type='checkbox' " +
+            (data.finished ? 'checked' : '') +
+            " name='all' onchange='changestatus(" +
+            index +
+            ")'></td>" +
+            '<td class=' +
+            (data.finished ? 'line' : '') +
+            "><input class='input'   ondblclick='changetext(this)'  onblur='savechange(this)' name='allthings' key=" +
+            index +
+            "  readonly='readonly'  onchange='changetext()' style='width:50px;' name='allthings' value=" +
+            data.title +
+            '></td>' +
+            "<td><button class='del' onclick='del_id(" +
+            index +
+            ")' key=" +
+            index +
+            '>' +
+            '删除</button></td>' +
+            '</tr>';
+        });
+        $('tbody').eq(0).empty().append(html);
+      }
 
-        //加载完成事项
-        function initFinished(data) {
-            var html = "";
+      //加载代办事项
+      function initUnfinish(unFinishData) {
+        var html = '';
 
-            $.each(data, function (index, data) {
-                if (data.finished) {
-                    html += "<tr>"
-                        + "<td><input type='checkbox' " + (data.finished ? 'checked' : '') + " onchange='changestatus(" + index + ")'></td>"
-                        + "<td class=" + (data.finished ? 'line' : '') + "><input class='' readonly='readonly' style='width:50px;' ondblclick='changetext(this)'  onblur='savechange(this)' key=" + index + " name='allthings' value=" + data.title + "></td>"
-                        + "<td><button class='del'  onclick='del_id(" + index + ")' key=" + index + ">" + "删除</button></td>"
-                        + "</tr>";
-                }
+        $.each(unFinishData, function (index, data) {
+          if (!data.finished) {
+            html +=
+              '<tr>' +
+              "<td><input type='checkbox' onchange='changestatus(" +
+              index +
+              ")'></td>" +
+              "<td><input class=''  readonly='readonly'  ondblclick='changetext(this)'  onblur='savechange(this)' key=" +
+              index +
+              " style='width:50px;' value=" +
+              data.title +
+              '></td>' +
+              "<td><button class='del' onclick='del_id(" +
+              index +
+              ")' key=" +
+              index +
+              '>' +
+              '删除</button></td>' +
+              '</tr>';
+          }
+        });
+        $('tbody').eq(1).empty().append(html);
+      }
 
-            })
-            $("tbody").eq(2).empty().append(html);
-        }
+      //加载完成事项
+      function initFinished(data) {
+        var html = '';
 
-
-
-
+        $.each(data, function (index, data) {
+          if (data.finished) {
+            html +=
+              '<tr>' +
+              "<td><input type='checkbox' " +
+              (data.finished ? 'checked' : '') +
+              " onchange='changestatus(" +
+              index +
+              ")'></td>" +
+              '<td class=' +
+              (data.finished ? 'line' : '') +
+              "><input class='' readonly='readonly' style='width:50px;' ondblclick='changetext(this)'  onblur='savechange(this)' key=" +
+              index +
+              " name='allthings' value=" +
+              data.title +
+              '></td>' +
+              "<td><button class='del'  onclick='del_id(" +
+              index +
+              ")' key=" +
+              index +
+              '>' +
+              '删除</button></td>' +
+              '</tr>';
+          }
+        });
+        $('tbody').eq(2).empty().append(html);
+      }
     </script>
-
-</body>
-
+  </body>
 </html>
