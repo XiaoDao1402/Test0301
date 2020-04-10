@@ -53,10 +53,13 @@ export default class App extends React.Component<{},State>{
     var updateItem = arr.find(function(value,index,arr){
         return value.id=== item.id;
     });
-    updateItem.finished = item.finished; 
-    this.setState({
-      todolist:arr
-    })
+    if(updateItem){
+      updateItem.finished = item.finished; 
+      this.setState({
+        todolist:arr
+      })
+    }
+    
   }
 
 

@@ -21,6 +21,7 @@ export default class TodoHeader extends Component<any,Props> {
         }
         var data = this.props.todolist.sort((a:TodoItem,b:TodoItem)=>a.id-b.id);
         var lastArr = data.slice(-1);
+        
         this.props.onAddTodo({
             id:lastArr[0].id + 1 ,
             title:value,
